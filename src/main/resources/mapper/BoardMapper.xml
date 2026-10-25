@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- NOTE: <mapper>로 감싸지 않거나, <DOCTYPE>을 지정하지 않으면 에러가 난다.-->
 <mapper namespace="board">
-    <insert id="insertBoard" parameterType="com.example.board.dto.BoardDTO">
+    <!-- insert문, parameterType은 어떤 DTO를 사용해서 데이터를 넘기는지 알려주기 위함.-->
+    <!-- 근데 BoardDTO에서 Board로 바꿨는데도 잘 동작하네..? getter정보만 가져오는건가?-->
+    <insert id="insertBoard">
     <!-- board.insertBoard -->     
-        INSERT INTO TB_BOARD(title, content)
-        VALUES(#{title}, #{content})
+        INSERT INTO TB_BOARD(title, content, REG_DT, UPD_DT)
+        VALUES(#{title}, #{content}, #{regDt}, #{updDt})
     </insert>
 
     <select id="findBoardInfoById" resultType="com.example.board.dto.BoardDTO">
@@ -17,6 +19,7 @@
         FROM TB_BOARD
         WHERE 1=1
         AND ID = #{ID}
+        <!-- 로직으로 삭제된 글은 조회하지 않는다. -->
         AND DEL_YN = 'N'
     </select>
 
