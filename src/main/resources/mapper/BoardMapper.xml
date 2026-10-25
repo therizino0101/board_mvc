@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- NOTE: <mapper>로 감싸지 않거나, <DOCTYPE>을 지정하지 않으면 에러가 난다.-->
+<mapper namespace="board">
+    <insert id="insertBoard" parameterType="com.example.board.dto.BoardDTO">
+    <!-- board.insertBoard -->     
+        INSERT INTO TB_BOARD(title, content)
+        VALUES(#{title}, #{content})
+    </insert>
+
+    <select id="findBoardInfoById" resultType="com.example.board.dto.BoardDTO">
+    <!-- board.findBoardInfoById --> 
+        SELECT
+            ID
+            , TITLE
+            , CONTENT
+        FROM TB_BOARD
+        WHERE 1=1
+        AND ID = #{ID}
+        AND DEL_YN = 'N'
+    </select>
+
+    <select id="countBoardById" resultType = "Integer">
+        SELECT
+            COUNT(*)
+        FROM TB_BOARD
+        WHERE 1=1
+        AND ID = #{id}
+        AND DEL_YN = 'N'
+    </select>
+
+    <select id="findAll" resultType="com.example.board.dto.BoardDTO">
+    <!-- board.findAll --> 
+        SELECT
+            ID
+            , TITLE
+            , CONTENT
+        FROM TB_BOARD
+        WHERE 1=1
+        AND DEL_YN = 'N'
+    </select>
+
+    <update id="updateBoard">
+    <!-- board.updateBoard -->
+        UPDATE TB_BOARD
+        SET
+            TITLE = #{title}
+            , CONTENT = #{content}
+        WHERE 1=1
+        AND ID = #{id}
+        AND DEL_YN = 'N'
+    </update>
+
+    <delete id="deleteBoard">
+    <!-- board.deleteBoard -->
+        UPDATE TB_BOARD
+        SET DEL_YN = 'Y'
+        WHERE ID = #{id}
+        AND DEL_YN = 'N'
+    </delete>
+</mapper>
