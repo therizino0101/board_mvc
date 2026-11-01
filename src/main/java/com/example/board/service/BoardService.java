@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 import com.example.board.common.error.ApiException;
@@ -37,7 +36,7 @@ public class BoardService {
     */
     // Transactional을 명시적으로 걸어야지 rollback이 걸린다.
     // 어노테이션을 최대한 활용해보자.
-public Board createBoard(BoardDTO boardParam) {
+    public Board createBoard(BoardDTO boardParam) {
         // 결과 정보를 담을 객체
         
         // NOTE: insert할때 param을 안넣으면 값이 안들어간다..
