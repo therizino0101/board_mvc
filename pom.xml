@@ -43,6 +43,11 @@
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>4.0.1</version>
 		</dependency>
+		<!-- 컨틀롤러에서 validation을 위한 import-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -70,6 +75,7 @@
 			<version>4.0.1</version>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
 
 	<build>

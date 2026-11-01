@@ -1,10 +1,11 @@
 package com.example.board.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.board.common.error.ApiException;
@@ -34,16 +35,21 @@ public class BoardService {
         output:
             - ResponseDTO
     */
-    public ResponseDTO createBoard(BoardDTO boardParam) {
+    // Transactional을 명시적으로 걸어야지 rollback이 걸린다.
+    // 어노테이션을 최대한 활용해보자.
+public Board createBoard(BoardDTO boardParam) {
         // 결과 정보를 담을 객체
-        ResponseDTO responseDTO = new ResponseDTO();
+        
         // NOTE: insert할때 param을 안넣으면 값이 안들어간다..
         // 유효성 검증
-        if(StringUtils.isBlank(boardParam.getTitle()) || StringUtils.isEmpty(boardParam.getContent())) {
-            // 유효성 검증에 실패하면 FAIL 리턴하고, 에러 내용을 사용자에게 알려주기 위해서 사용
-            throw new ApiException(ExceptionEnum.FAIL, "글 제목 또는 본문을 입력하세요");
-            
-        }
+        // 검증할때 @Valid를 쓰면 코드를 더 단순하게 작성할 수 있다.
+        // isBlank는 공백하나만 있어도 통과
+        // 수정이랑 생성이랑 규칙이 다름. 그래서 DTO에 Valid를 사용한다.
+        // ----------- Valid는 Controller 레이어에서 진행한다. ----------------
+        // if(StringUtils.isBlank(boardParam.getTitle()) || StringUtils.isEmpty(boardParam.getContent())) {
+        //     // 유효성 검증에 실패하면 FAIL 리턴하고, 에러 내용을 사용자에게 알려주기 위해서 사용
+        //     throw new ApiException(ExceptionEnum.FAIL, "글 제목 또는 본문을 입력하세요");
+        // }
         // DTO로 받아온 정보를 모델 객체에 담아서 테이블에 필요한 정보를 모두 저장
         Board board = new Board();
         board.setTitle(boardParam.getTitle());
@@ -54,9 +60,7 @@ public class BoardService {
         int createResult = sqlSession.insert(NAMESPACE + "insertBoard", board);
         // DB에 저장된 정보가 있다면 성공 반환
         if(createResult > 0) {
-            responseDTO.setResult(ExceptionEnum.SUCCESS);
-            responseDTO.setMessage("저장 성공");
-            return responseDTO;
+            return board;
         } else {
             throw new ApiException(ExceptionEnum.FAIL, "저장 실패");
         }
@@ -97,9 +101,10 @@ public class BoardService {
         input: N/A
         output: ResponseDTO
     */
-    public ResponseDTO searchList() {
+    // 목록 전체를 불러오면 성능문제 발생 가능, pagination 구현해보기.
+    public ResponseDTO  searchList() {
         ResponseDTO responseDTO = new ResponseDTO();
-        
+        // 서비스에서 repository까지 책임돼서 역할이 과도하게 됨.
         List<BoardDTO> boardList = sqlSession.selectList(NAMESPACE + "findAll");
 
         responseDTO.setResult(ExceptionEnum.SUCCESS);
@@ -116,7 +121,8 @@ public class BoardService {
             - content
         output: ResponseDTO
     */
-    public ResponseDTO updateBoard(BoardDTO boardDTO) {
+   // upd_dt 갱신 코드가 없음
+    public ResponseDTO  updateBoard(BoardDTO boardDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         if(StringUtils.isBlank(boardDTO.getId())) {
             throw new ApiException(ExceptionEnum.FAIL, "존재하지 않거나 삭제된 게시글입니다.");
