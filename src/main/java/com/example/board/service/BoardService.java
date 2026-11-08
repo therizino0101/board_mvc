@@ -2,16 +2,21 @@ package com.example.board.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.ibatis.session.SqlSession;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.board.common.error.ApiException;
 import com.example.board.common.error.ExceptionEnum;
 import com.example.board.dto.BoardDTO;
 import com.example.board.dto.ResponseDTO;
 import com.example.board.model.Board;
+import com.example.board.model.Post;
+import com.example.board.model.PostRequest;
+import com.example.board.repository.PostRepository;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 // 스프링이 실행되면 빈을 주입해줌.
 @RequiredArgsConstructor 
 public class BoardService {
+    private final PostRepository postRepository;
     // mybatis로 sql을 호출하기 위해서 의존성 추가
     private final SqlSession sqlSession;
     final String NAMESPACE = "board.";
@@ -36,33 +42,15 @@ public class BoardService {
     */
     // Transactional을 명시적으로 걸어야지 rollback이 걸린다.
     // 어노테이션을 최대한 활용해보자.
-    public Board createBoard(BoardDTO boardParam) {
-        // 결과 정보를 담을 객체
+    @Transactional 
+    public Post createBoard(PostRequest request) {
+        Post post = new Post();
+        post.setTitle(request.getTitle());
+        post.setContent(request.getContent());
         
-        // NOTE: insert할때 param을 안넣으면 값이 안들어간다..
-        // 유효성 검증
-        // 검증할때 @Valid를 쓰면 코드를 더 단순하게 작성할 수 있다.
-        // isBlank는 공백하나만 있어도 통과
-        // 수정이랑 생성이랑 규칙이 다름. 그래서 DTO에 Valid를 사용한다.
-        // ----------- Valid는 Controller 레이어에서 진행한다. ----------------
-        // if(StringUtils.isBlank(boardParam.getTitle()) || StringUtils.isEmpty(boardParam.getContent())) {
-        //     // 유효성 검증에 실패하면 FAIL 리턴하고, 에러 내용을 사용자에게 알려주기 위해서 사용
-        //     throw new ApiException(ExceptionEnum.FAIL, "글 제목 또는 본문을 입력하세요");
-        // }
-        // DTO로 받아온 정보를 모델 객체에 담아서 테이블에 필요한 정보를 모두 저장
-        Board board = new Board();
-        board.setTitle(boardParam.getTitle());
-        board.setContent(boardParam.getContent());
-        board.setRegDt(LocalDateTime.now());
-        board.setUpdDt(LocalDateTime.now());
-        // DB에 저장하고 저장된 행 수를 반환
-        int createResult = sqlSession.insert(NAMESPACE + "insertBoard", board);
-        // DB에 저장된 정보가 있다면 성공 반환
-        if(createResult > 0) {
-            return board;
-        } else {
-            throw new ApiException(ExceptionEnum.FAIL, "저장 실패");
-        }
+        long postId = postRepository.save(post);
+        
+        return findById(postId);
     }
 
     /*
@@ -194,5 +182,13 @@ public class BoardService {
             // return responseDTO;
         }
     }
-}
 
+    private Post findById(long id) {
+        Post post = postRepository.findById(id);
+        if(Objects.isNull(post)) {
+            throw new RuntimeException();
+        }
+    
+        return post;
+    }
+}

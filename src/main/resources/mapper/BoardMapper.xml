@@ -4,13 +4,22 @@
 <mapper namespace="board">
     <!-- insert문, parameterType은 어떤 DTO를 사용해서 데이터를 넘기는지 알려주기 위함.-->
     <!-- 생성된 id값을 받으려면 usGeneratedKeys, keyProperties를 적어야됨.-->
-    <insert id="insertBoard" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertBoard" useGeneratedKeys="true" keyProperty="postId">
     <!-- board.insertBoard -->     
-        INSERT INTO TB_BOARD(title, content, REG_DT, UPD_DT)
-        VALUES(#{title}, #{content}, #{regDt}, #{updDt})
+        INSERT INTO TB_POST(title, content)
+        VALUES(#{title}, #{content})
     </insert>
 
-    <select id="findBoardInfoById" resultType="com.example.board.dto.BoardDTO">
+    <select id="findById" resultType="com.example.board.model.Post">
+    <!-- board.findById -->     
+        SELECT *
+        FROM TB_POST
+        WHERE 1=1
+        AND POST_ID = #{id}
+        AND DEL_YN = 'N'
+    </select>
+
+    <select id="findBoardInfoById" resultType="com.example.board.model.Post">
     <!-- board.findBoardInfoById --> 
         SELECT
             ID

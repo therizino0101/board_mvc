@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 /*
     DB의 테이블을 그대로 만든 모델DTO
 */
 @Setter
 @Getter
+@ToString
 public class Board {
     // id
     // 상세조회할때 1개만 골라야 되는데 title을 쓰기에는 중복이 있을것 같아서 id를 만듬.
