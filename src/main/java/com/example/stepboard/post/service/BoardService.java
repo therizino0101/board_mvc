@@ -1,22 +1,23 @@
-package com.example.board.service;
+package com.example.stepboard.post.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 import org.apache.ibatis.session.SqlSession;
-
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.board.common.error.ApiException;
-import com.example.board.common.error.ExceptionEnum;
-import com.example.board.dto.BoardDTO;
-import com.example.board.dto.ResponseDTO;
-import com.example.board.model.Board;
-import com.example.board.model.Post;
-import com.example.board.model.PostRequest;
-import com.example.board.repository.PostRepository;
+import com.example.stepboard.post.common.error.ApiException;
+import com.example.stepboard.post.common.error.ExceptionEnum;
+import com.example.stepboard.post.common.exception.PostNotFoundException;
+import com.example.stepboard.post.dto.BoardDTO;
+import com.example.stepboard.post.dto.ResponseDTO;
+import com.example.stepboard.post.model.Board;
+import com.example.stepboard.post.model.Post;
+import com.example.stepboard.post.model.PostRequest;
+import com.example.stepboard.post.repository.PostRepository;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class BoardService {
     private final PostRepository postRepository;
     // mybatis로 sql을 호출하기 위해서 의존성 추가
     private final SqlSession sqlSession;
-    final String NAMESPACE = "board.";
+    final String NAMESPACE = "post.";
     
       /*
         description: 게시글 생성
@@ -40,13 +41,11 @@ public class BoardService {
         output:
             - ResponseDTO
     */
-    // Transactional을 명시적으로 걸어야지 rollback이 걸린다.
-    // 어노테이션을 최대한 활용해보자.
     @Transactional 
-    public Post createBoard(PostRequest request) {
+    public Post createPost(PostRequest request) {
         Post post = new Post();
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
+        post.setTitle(request.getTitle().strip());
+        post.setContent(request.getContent().strip());
         
         long postId = postRepository.save(post);
         
@@ -175,7 +174,7 @@ public class BoardService {
             responseDTO.setResult(ExceptionEnum.SUCCESS);
             responseDTO.setMessage("삭제 완료");
             return responseDTO;
-        } else{
+        } else {
             throw new ApiException(ExceptionEnum.FAIL, "존재하지 않거나 삭제된 게시글입니다.");
             // responseDTO.setResult(ExceptionEnum.FAIL);
             // responseDTO.setMessage("삭제 실패");
@@ -184,11 +183,19 @@ public class BoardService {
     }
 
     private Post findById(long id) {
-        Post post = postRepository.findById(id);
-        if(Objects.isNull(post)) {
-            throw new RuntimeException();
-        }
+        Post post = postRepository.findById(id)
+        .orElseThrow(() -> new PostNotFoundException(id));
     
         return post;
+    }
+
+    @Transactional(readOnly = true)
+    public Post getPost(long postId) {
+        return findPost(postId);
+    }
+
+    private Post findPost(long postId) {
+        return postRepository.findById(postId)
+        .orElseThrow(() -> new PostNotFoundException(postId));
     }
 }

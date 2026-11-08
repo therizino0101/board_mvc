@@ -1,4 +1,4 @@
-package com.example.board.common.error;
+package com.example.stepboard.post.common.error;
 
 import org.springframework.http.HttpStatus;
 

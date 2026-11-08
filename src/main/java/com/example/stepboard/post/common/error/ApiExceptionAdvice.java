@@ -1,9 +1,9 @@
-package com.example.board.common.error;
+package com.example.stepboard.post.common.error;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.board.dto.ResponseDTO;
+import com.example.stepboard.post.dto.ResponseDTO;
 
 
 // 특정 Exception이 발생할때마다 처리하는 로직

@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- NOTE: <mapper>로 감싸지 않거나, <DOCTYPE>을 지정하지 않으면 에러가 난다.-->
 <mapper namespace="board">
+    <!-- resultMap 작성하기 -->
     <!-- insert문, parameterType은 어떤 DTO를 사용해서 데이터를 넘기는지 알려주기 위함.-->
     <!-- 생성된 id값을 받으려면 usGeneratedKeys, keyProperties를 적어야됨.-->
     <insert id="insertBoard" useGeneratedKeys="true" keyProperty="postId">
@@ -10,7 +11,7 @@
         VALUES(#{title}, #{content})
     </insert>
 
-    <select id="findById" resultType="com.example.board.model.Post">
+    <select id="findById" resultType="com.example.stepboard.post.model.Post">
     <!-- board.findById -->     
         SELECT *
         FROM TB_POST
@@ -19,7 +20,7 @@
         AND DEL_YN = 'N'
     </select>
 
-    <select id="findBoardInfoById" resultType="com.example.board.model.Post">
+    <select id="findBoardInfoById" resultType="com.example.stepboard.post.model.Post">
     <!-- board.findBoardInfoById --> 
         SELECT
             ID
@@ -41,7 +42,7 @@
         AND DEL_YN = 'N'
     </select>
 
-    <select id="findAll" resultType="com.example.board.dto.BoardDTO">
+    <select id="findAll" resultType="com.example.stepboard.post.dto.BoardDTO">
     <!-- board.findAll --> 
         SELECT
             ID

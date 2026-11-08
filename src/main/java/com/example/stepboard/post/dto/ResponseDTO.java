@@ -1,6 +1,6 @@
-package com.example.board.dto;
+package com.example.stepboard.post.dto;
 
-import com.example.board.common.error.ExceptionEnum;
+import com.example.stepboard.post.common.error.ExceptionEnum;
 
 import lombok.Getter;
 import lombok.Setter;

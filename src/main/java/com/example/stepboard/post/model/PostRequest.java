@@ -1,9 +1,8 @@
-package com.example.board.model;
+package com.example.stepboard.post.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
 
 
 // Resolved [org.springframework.http.converter.HttpMessageNotReadableException: 
@@ -18,6 +17,7 @@ import lombok.Setter;
 // 그렇다면 파라미터에 저장된 값을 GET으로 읽으려고 하는데 
 // JSON parse를 해서 자바 객체로 만들때 Setter가 없어서 제대로 Set이 안된걸까?
 @Getter 
+// class < record (요청 객체라서 불변하기 때문)
 public class PostRequest {
     @NotBlank(message = "제목을 입력해 주세요")
     @Size(max = 200, message = "제목은 200자 까지 입력할 수 있습니다")
@@ -26,6 +26,4 @@ public class PostRequest {
     @NotBlank(message ="내용을 입력해 주세요")
     @Size (max = 10000, message = "내용은 10000자까지 입력할 수 있습니다.")
     private String content;
-
-
 }

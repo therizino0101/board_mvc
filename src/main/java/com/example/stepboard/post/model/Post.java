@@ -1,4 +1,4 @@
-package com.example.board.model;
+package com.example.stepboard.post.model;
 
 import java.time.LocalDateTime;
 
