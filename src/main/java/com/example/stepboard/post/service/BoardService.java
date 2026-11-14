@@ -132,6 +132,7 @@ public class BoardService {
             // return responseDTO;
         }
         // NOTE: update할때 파라미터를 넣어줘야 쿼리에 값이 들어가고, update가 실행된다.
+        
         int resultCount = sqlSession.update(NAMESPACE + "updateBoard", boardDTO);
         if(resultCount >0) {
             responseDTO.setResult(ExceptionEnum.SUCCESS);

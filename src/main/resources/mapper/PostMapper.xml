@@ -17,7 +17,21 @@
             , REG_DT
             , UPD_DT
         FROM TB_POST
-        WHERE POST_ID = #{postId}
+        WHERE 1=1
+        AND POST_ID = #{postId}
+        AND DEL_YN = 'N'
+    </select>
+
+    <select id="findAll" resultMap = "postResultMap">
+        SELECT
+            POST_ID
+            , TITLE
+            , CONTENT
+            , REG_DT
+            , UPD_DT
+        FROM TB_POST
+        WHERE 1=1
+        AND DEL_YN = 'N'
     </select>
 
     <insert id="insert"
@@ -29,6 +43,23 @@
         INSERT INTO TB_POST (title, content)
         VALUES (#{title}, #{content})
     </insert>
+
+    <update id="update"
+            parameterType="com.example.stepboard.post.model.Post"
+    >
+        UPDATE TB_POST
+        SET
+            TITLE = #{title}
+            , CONTENT = #{content}
+            , UPD_DT = SYSUTCDATETIME()
+        WHERE POST_ID = #{postId}
+    </update>
+
+    <delete id="deleteById">
+        UPDATE TB_POST
+        SET DEL_YN = 'Y'
+        WHERE POST_ID = #{postId}
+    </delete>
 
 
 </mapper>

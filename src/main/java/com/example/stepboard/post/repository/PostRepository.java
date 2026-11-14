@@ -1,5 +1,6 @@
 package com.example.stepboard.post.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.ibatis.session.SqlSession;
@@ -30,5 +31,18 @@ public class PostRepository {
     public Optional<Post> findById(long postId) {
         Post post = sqlSession.selectOne(NAMESPACE + "findById", postId);
         return Optional.ofNullable(post);
+    }
+
+    public boolean update(Post post) {
+        int resultCount = sqlSession.update(NAMESPACE + "update", post);
+        return resultCount == 1;
+    }
+
+    public boolean delete(long postId) {
+        return sqlSession.delete(NAMESPACE + "deleteById", postId) == 1;
+    }
+
+    public List<Post> findAll() {
+        return sqlSession.selectList(NAMESPACE + "findAll");
     }
 }

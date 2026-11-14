@@ -39,13 +39,22 @@
     
 
 4. POST 요청 시 Service 계층에서 repository에 저장한 뒤 다시 findPost로 찾아오는 이유는? 저장할때 사용했던 post 객체에 id 값이 들어갈텐데..? 혹시 delYn, 생성일시같은 DB에서 생성되는 값은 자동으로 채워지지 않기때문인가?
-    
+- 맞다.
 
 5. repository에서 save할때 DB에서 저장을 실패하는 경우가 있나? 앞서 Controller에서 예외처리를 제대로 했다면 저장하는데 문제는 없을것 같은데..
 그리고 왜 IllegalStateException이지? 저장을 해야 정상 상태인데 저장하지 못해서 비정상상태라는거?
+- 맞다.
 
+6. 내가 구현할때는 업데이트 요청을 POST로 받았는데, 정답코드는 PUT으로 받는다.
+POST와 PUT의 기능적 차이가 있는가?
+의미차이가 있다는건 알겠다..
 
-6. DB에 한번 요청을 보내는게 큰 비용이 드나?
+7. 업데이트 코드에서 왜 Controller의 method이름은 update인데, service에서는 updatePost인거지?
+다른 이유를 모르곘다.
+PostController라서 앞에 도메인 이름이 있으니까 update가 붙는다면 납득이 되는데 service도 마찬가지로 update가 되어야 맞지않나?
+
+8. 왜 Service 레이어에서 PostNotFoundException을 던지는거지? 레포지토리에서는 IllegalStateException만 던지는데... Service레이어는 Post 도메인과 관련된 비즈니스 로직을 수행하기 때문인가? 레포지토리는 DB 통신만 전담하기 때문?
+
 
 
 # 내 코드랑 다른점
