@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.stepboard.post.common.error.ApiException;
 import com.example.stepboard.post.common.error.ExceptionEnum;
+import com.example.stepboard.post.dto.PageDTO;
 import com.example.stepboard.post.model.Board;
 import com.example.stepboard.post.model.Post;
 
@@ -42,7 +43,8 @@ public class PostRepository {
         return sqlSession.delete(NAMESPACE + "deleteById", postId) == 1;
     }
 
-    public List<Post> findAll() {
-        return sqlSession.selectList(NAMESPACE + "findAll");
+    public List<Post> findAll(PageDTO pageDTO) {
+        
+        return sqlSession.selectList(NAMESPACE + "findAll", pageDTO);
     }
 }

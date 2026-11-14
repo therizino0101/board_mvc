@@ -32,6 +32,9 @@
         FROM TB_POST
         WHERE 1=1
         AND DEL_YN = 'N'
+        ORDER BY REG_DT DESC
+        OFFSET #{offset} ROWS
+        FETCH NEXT #{pageCount} ROWS ONLY
     </select>
 
     <insert id="insert"

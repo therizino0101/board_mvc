@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.stepboard.post.common.exception.PostNotFoundException;
+import com.example.stepboard.post.dto.PageDTO;
 import com.example.stepboard.post.model.Post;
 import com.example.stepboard.post.model.PostRequest;
 import com.example.stepboard.post.repository.PostRepository;
@@ -39,8 +40,9 @@ public class PostService {
         }
     }
     @Transactional(readOnly = true)
-    public List<Post> getPosts() {
-        return postRepository.findAll();
+    public List<Post> getPosts(PageDTO pageDto) {
+        
+        return postRepository.findAll(pageDto);
     }
     
     private Post findById(long postId) {

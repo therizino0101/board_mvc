@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.example.stepboard.post.dto.BoardDTO;
-import com.example.stepboard.post.dto.ResponseDTO;
-import com.example.stepboard.post.model.Board;
+import com.example.stepboard.post.dto.PageDTO;
 import com.example.stepboard.post.model.Post;
 import com.example.stepboard.post.model.PostRequest;
 import com.example.stepboard.post.service.BoardService;
@@ -34,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/posts")
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 @Validated 
 public class PostController {
     
@@ -43,11 +40,25 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<Post> createBoard(@Valid @RequestBody PostRequest request) {
-       
         Post post = boardService.createPost(request);
         return ResponseEntity.created(URI.create("/api/posts/" + post.getPostId()))
             .body(post);
     }
+
+    // 페이지네이션 - 전체를 찾으면 시간이 존나게 오래걸리니까.. 쿼리 단계에서 페이지별로 쪼개서 가져오는것?
+    // 결국에는 앞에 자를 수 OFFSET이랑 몇개를 보여줄지만 결정하면 된다.
+    // 페이지 개념은... 몇개씩 잘라서 보여줄지 이니까 (보기 편하라고)
+    // 만약에 10개씩 보여주는 페이지가 있다.
+    // 첫번째 페이지를 보여주고싶다. 그러면
+    // offset은 0이고, fetch next는 10 rows를 보여주면된다.
+
+    // 두번째 페이지를 보여주고 싶다? 그러면
+    // offset은 10, fetch next는 10을 보여준다.
+
+    // 세번째 페이지를 보여주고 싶다? 그러면
+    // offset은 20, fetch next는 10을 보여준다.
+
+    // 공식은.. offset = (보여줄 개수) * (페이지 번호 - 1)
 
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPost(
@@ -58,8 +69,17 @@ public class PostController {
     
 
     @GetMapping
-    public ResponseEntity<List<Post>> getPosts() {
-        return ResponseEntity.ok(postService.getPosts());
+    public ResponseEntity<List<Post>> getPosts (
+        @RequestParam int pageNum,
+        @RequestParam int pageCount
+    ) {
+        // 컨트롤러는 요청과 응답을 관리한다고 생각하기 때문에
+        // 컨트롤러에서 Page 객체를 조립함.
+        PageDTO pageDto = new PageDTO();
+        int offset = pageCount * (pageNum -1 );
+        pageDto.setOffset(offset);
+        pageDto.setPageCount(pageCount);
+        return ResponseEntity.ok(postService.getPosts(pageDto));
     }
 
     @PutMapping("/{postId}")
